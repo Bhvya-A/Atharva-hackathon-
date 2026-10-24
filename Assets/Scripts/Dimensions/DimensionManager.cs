@@ -98,6 +98,10 @@ namespace TheOtherSide
             if (GameManager.Instance == null || !GameManager.Instance.IsGameplayActive)
                 return false;
 
+            PlayerHealth health = PlayerHealth.Instance;
+            if (health != null && health.IsDead)
+                return false;
+
             if (CooldownRemaining > 0f)
                 return false;
 
@@ -113,6 +117,7 @@ namespace TheOtherSide
             Color flash = next == Dimension.Void ? voidFlash : realityFlash;
 
             TransitionStarted?.Invoke(previous, next);
+            HorrorAudioManager.Instance?.PlayDimensionSwitch(next == Dimension.Void);
 
             float fadeIn = Mathf.Max(0.05f, transitionDuration * 0.45f);
             float fadeOut = Mathf.Max(0.05f, transitionDuration * 0.55f);

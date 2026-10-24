@@ -41,6 +41,8 @@ namespace TheOtherSide
 
             _taken = true;
             carrier.CollectKey(keyId);
+            HorrorAudioManager.Instance?.PlayRelicPickup();
+            HUDController.Instance?.ShowNotification($"{displayName} ACQUIRED", 1.4f);
             Debug.Log($"[TheOtherSide] Picked up {displayName}.");
             Destroy(gameObject);
         }

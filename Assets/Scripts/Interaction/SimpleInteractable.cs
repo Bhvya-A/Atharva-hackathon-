@@ -33,6 +33,7 @@ namespace TheOtherSide
             if (_renderer != null)
                 _renderer.material.color = Color.Lerp(_baseColor, Color.yellow, 0.65f);
 
+            HorrorAudioManager.Instance?.PlayInteraction();
             Debug.Log($"[TheOtherSide] {name}: {inspectedMessage}");
         }
     }

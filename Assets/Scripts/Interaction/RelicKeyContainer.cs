@@ -63,6 +63,7 @@ namespace TheOtherSide
             if (statusRenderer != null)
                 statusRenderer.material.color = unlockedColor;
 
+            HorrorAudioManager.Instance?.PlayDoorOpen();
             Debug.Log($"[TheOtherSide] Unlocked {name}. A relic is now available.");
         }
 

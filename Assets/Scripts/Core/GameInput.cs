@@ -15,6 +15,7 @@ namespace TheOtherSide
         public static InputAction Jump { get; private set; }
         public static InputAction Interact { get; private set; }
         public static InputAction SwitchDimension { get; private set; }
+        public static InputAction TimeFreeze { get; private set; }
         public static InputAction Cancel { get; private set; }
 
         public static bool UsedFallbackSwitchDimension { get; private set; }
@@ -22,6 +23,7 @@ namespace TheOtherSide
         public static bool IsReady => Move != null;
 
         static InputAction _ownedSwitchAction;
+        static InputAction _ownedTimeFreezeAction;
 
         public static void Initialize()
         {
@@ -30,6 +32,9 @@ namespace TheOtherSide
 
             if (SwitchDimension == null)
                 BindSwitchDimension();
+
+            if (TimeFreeze == null)
+                BindTimeFreeze();
 
             EnableGameplay();
         }
@@ -73,6 +78,25 @@ namespace TheOtherSide
             Debug.LogWarning("GameInput: SwitchDimension action missing from InputSystem_Actions. Using fallback Q / Left Shoulder.");
         }
 
+        static void BindTimeFreeze()
+        {
+            if (TimeFreeze != null)
+                return;
+
+            InputActionAsset asset = ResolveActionAsset();
+            InputActionMap player = asset != null ? asset.FindActionMap("Player") : null;
+            TimeFreeze = player != null ? player.FindAction("TimeFreeze") : null;
+
+            if (TimeFreeze != null)
+                return;
+
+            _ownedTimeFreezeAction = new InputAction("TimeFreeze", InputActionType.Button);
+            _ownedTimeFreezeAction.AddBinding("<Keyboard>/f");
+            _ownedTimeFreezeAction.AddBinding("<Gamepad>/rightShoulder");
+            TimeFreeze = _ownedTimeFreezeAction;
+            Debug.LogWarning("GameInput: TimeFreeze action missing from InputSystem_Actions. Using fallback F / Right Shoulder.");
+        }
+
         public static void EnableGameplay()
         {
             Move?.Enable();
@@ -81,6 +105,7 @@ namespace TheOtherSide
             Jump?.Enable();
             Interact?.Enable();
             SwitchDimension?.Enable();
+            TimeFreeze?.Enable();
             Cancel?.Enable();
         }
 
@@ -92,14 +117,17 @@ namespace TheOtherSide
             Jump?.Disable();
             Interact?.Disable();
             SwitchDimension?.Disable();
+            TimeFreeze?.Disable();
         }
 
         public static Vector2 MoveValue => IsReady ? Move.ReadValue<Vector2>() : Vector2.zero;
+
         public static Vector2 LookValue => IsReady ? Look.ReadValue<Vector2>() : Vector2.zero;
         public static bool SprintHeld => Sprint != null && Sprint.IsPressed();
         public static bool JumpPressed => Jump != null && Jump.WasPressedThisFrame();
         public static bool CancelPressed => Cancel != null && Cancel.WasPressedThisFrame();
         public static bool SwitchDimensionPressed => SwitchDimension != null && SwitchDimension.WasPressedThisFrame();
+        public static bool TimeFreezePressed => TimeFreeze != null && TimeFreeze.WasPressedThisFrame();
 
         static bool _interactHeld;
 

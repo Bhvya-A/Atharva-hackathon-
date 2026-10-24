@@ -43,6 +43,7 @@ namespace TheOtherSide
             }
 
             manager.CollectRelic();
+            HorrorAudioManager.Instance?.PlayInteraction();
             Debug.Log(
                 $"[TheOtherSide] Relic deposited. Progress: " +
                 $"{manager.RelicsCollected}/{GameManager.RelicGoal}.");
